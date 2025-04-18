@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wordle</title>
+  <link rel="stylesheet" href="css/webapp.css">
+</head>
+<body>
+
+  <h1>Wordle Clone</h1>
+  <div id="board"></div>
+
+  <p id="message"></p>
+  <button id="reset-btn" onclick="startGame()" style="display:none;">Play Again</button>
+
+  <script>
+    const wordList = ["APPLE", "GRAPE", "MANGO", "BRAIN", "PLANT", "TRUCK", "SHEEP", "DRIVE", "STONE", "LEMON"];
+    let answer = "";
+    let currentRow = 0;
+    let currentGuess = "";
+    const maxGuesses = 6;
+    const wordLength = 5;
+
+    const board = document.getElementById("board");
+    const message = document.getElementById("message");
+    const resetBtn = document.getElementById("reset-btn");
+
+    function createBoard() {
+      board.innerHTML = "";
+      for (let i = 0; i < maxGuesses * wordLength; i++) {
+        const tile = document.createElement("div");
+        tile.classList.add("tile");
+        tile.setAttribute("id", "tile-" + i);
+        board.appendChild(tile);
+      }
+    }
+
+    function updateBoard() {
+      for (let i = 0; i < currentGuess.length; i++) {
+        const index = currentRow * wordLength + i;
+        const tile = document.getElementById("tile-" + index);
+        tile.textContent = currentGuess[i];
+      }
+    }
+
+    function clearRow(row) {
+      for (let i = 0; i < wordLength; i++) {
+        const tile = document.getElementById(`tile-${row * wordLength + i}`);
+        tile.textContent = "";
+        tile.className = "tile";
+      }
+    }
+
+    function submitGuess() {
+      if (currentGuess.length !== wordLength) {
+        message.textContent = "Enter 5 letters!";
+        return;
+      }
+
+      for (let i = 0; i < wordLength; i++) {
+        const letter = currentGuess[i];
+        const tile = document.getElementById(`tile-${currentRow * wordLength + i}`);
+
+        if (letter === answer[i]) {
+          tile.classList.add("correct");
+        } else if (answer.includes(letter)) {
+          tile.classList.add("present");
+        } else {
+          tile.classList.add("absent");
+        }
+      }
+
+      if (currentGuess === answer) {
+        message.textContent = "🎉 You got it!";
+        endGame();
+      } else if (currentRow === maxGuesses - 1) {
+        message.textContent = `😢 The word was ${answer}`;
+        endGame();
+      } else {
+        currentRow++;
+        currentGuess = "";
+      }
+    }
+
+    function handleKeyPress(event) {
+      if (resetBtn.style.display === "inline-block") return;
+
+      const key = event.key.toUpperCase();
+
+      if (key === "ENTER") {
+        submitGuess();
+      } else if (key === "BACKSPACE") {
+        if (currentGuess.length > 0) {
+          currentGuess = currentGuess.slice(0, -1);
+          const index = currentRow * wordLength + currentGuess.length;
+          const tile = document.getElementById("tile-" + index);
+          tile.textContent = "";
+        }
+      } else if (/^[A-Z]$/.test(key)) {
+        if (currentGuess.length < wordLength) {
+          currentGuess += key;
+          updateBoard();
+        }
+      }
+    }
+
+    function endGame() {
+      document.removeEventListener("keydown", handleKeyPress);
+      resetBtn.style.display = "inline-block";
+    }
+
+    function startGame() {
+      answer = wordList[Math.floor(Math.random() * wordList.length)];
+      currentRow = 0;
+      currentGuess = "";
+      message.textContent = "";
+      resetBtn.style.display = "none";
+      createBoard();
+      document.addEventListener("keydown", handleKeyPress);
+      console.log("Answer is:", answer); // For testing
+    }
+
+    // Start on load
+    startGame();
+  </script>
+  <a href="scratch.html">Back To Scratch</a>
+
+</body>
+</html>
