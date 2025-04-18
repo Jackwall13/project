@@ -10697,8 +10697,8 @@ header.masthead {
   padding-top: calc(8rem + 57px);
   padding-bottom: 8rem;
   background: no-repeat center center;
+  background-image: url('/assets/img/Walkup\ copy.jpg')
   background-color: #6c757d;
-  background-image: url('img/Shimmy.jpeg');
   background-size: cover;
   background-attachment: scroll;
 }
