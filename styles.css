@@ -10698,7 +10698,7 @@ header.masthead {
   padding-bottom: 8rem;
   background: no-repeat center center;
   background-color: #6c757d;
-  background-image: url('img/Shimmy.jpeg')
+  background-image: url('img/Shimmy.jpeg');
   background-size: cover;
   background-attachment: scroll;
 }
